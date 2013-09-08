@@ -9,7 +9,7 @@
     }catch(e){
       fn = function(){};
 
-      console.log("EVAL FAILED:\t\t\t", e);
+      console.log("eval failed: ", e);
     }
     return fn;
   };
