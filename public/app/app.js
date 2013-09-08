@@ -5,18 +5,17 @@
     var fn = null;
 
     try{
-      fn = window.eval("(" + str + ")");
+      fn = window.eval("(function(){" + str + "})");
     }catch(e){
       fn = function(){};
 
-      console.log("eval failed: ", e);
+      console.log("EVAL FAILED:\t\t\t", e);
     }
     return fn;
   };
 
   var require = function(id, callback){
-
-    console.log("require ", id);
+    console.log("require: ", id);
 
     db.get(id, function(value){
       var fn = tryEval(value);
@@ -27,6 +26,8 @@
   };
 
   var run = function(id, callback){
+    console.log("run: ", id);
+
     require(id, function(fn){
       fn();
       if(typeof callback === "function"){
