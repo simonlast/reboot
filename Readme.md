@@ -1,12 +1,9 @@
+##Reboot
 
-1.
-  
-  npm install
-  
-2.
-  
-  sudo node server/server.js
+...trying to make a completely bootstrapped editor for the web.
 
-3.
-  
-  localhost
+`npm install`
+
+`sudo node server/server.js`
+
+`localhost`
