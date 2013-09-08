@@ -1,0 +1,13 @@
+{
+  "name": "Bootstrap",
+  "description": "Bootstrap",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x",
+    "connect": "2.x",
+    "socket.io": "0.9.x",
+    "leveldown": ">=0.8.2",
+    "levelup": ">=0.15.0"
+  }
+}
