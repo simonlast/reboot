@@ -4,14 +4,16 @@
   var socket = io.connect(window.location.href);
 
   db.get = function(id, callback){
-    console.log("get: ", id);
+    if(window.debug)
+      console.log("get: ", id);
     socket.emit("get", {id: id}, function(value){
       callback(value.value, value.err);
     });
   };
 
   db.set = function(id, value){
-    console.log("set: ", id);
+    if(window.debug)
+      console.log("set: ", id);
     var data = {
       id: id,
       value: value
@@ -36,13 +38,15 @@
     }catch(e){
       fn = function(){};
 
-      console.log("eval failed: ", e);
+      if(window.debug)
+        console.log("eval failed: ", e);
     }
     return fn;
   };
 
   var require = function(id, callback){
-    console.log("require: ", id);
+    if(window.debug)
+      console.log("require: ", id);
 
     db.get(id, function(value){
       var fn = tryEval(value);
@@ -53,7 +57,8 @@
   };
 
   var run = function(id, callback){
-    console.log("run: ", id);
+    if(window.debug)
+      console.log("run: ", id);
 
     require(id, function(fn){
       fn();
