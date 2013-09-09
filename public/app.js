@@ -1,5 +1,6 @@
-// Setup db interface
 (function(){
+
+  // Setup db interface
   var db = {};
   var socket = io.connect(window.location.href);
 
@@ -22,12 +23,7 @@
   };
 
 
-  window.db = db;
-})();
-
-
-// Setup require interface.
-(function(){
+  // Setup require interface.
 
   var tryEval = function(str){
     var error = null;
@@ -72,7 +68,11 @@
     run("main");
   };
 
-  bootstrap();
+  socket.on("connect", function(){
+    bootstrap();
+  });
+  
+  window.db = db;
   window.require = require;
   window.run = run;
 })();
