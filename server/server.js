@@ -43,6 +43,18 @@ io.sockets.on("connection", function(socket){
 
   });
 
+  socket.on("all", function(data, fn){
+    var keys = [];
+
+    db.createReadStream()
+      .on('data', function (data) {
+        keys.push(data.key);
+      })
+      .on('end', function () {
+        fn(keys);
+      });
+  });
+
 });
 
 server.listen(process.argv[2] || 80);

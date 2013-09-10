@@ -151,6 +151,18 @@
   };
 
 
+  db.all = function(callback){
+    if(window.debug)
+      console.log("all");
+
+    socket.emit("all", {}, function(data){
+      if(typeof callback === "function"){
+        callback(data);
+      }
+    });
+  };
+
+
   var bootstrap = function(){
     db.run("main");
   };
