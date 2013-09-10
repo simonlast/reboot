@@ -106,7 +106,9 @@
     };
     socket.emit("set", data);
   };
-  var require = function(){
+  
+
+  db.require = function(){
     var split = splitArgs(arguments);
 
     if(window.debug)
@@ -127,7 +129,7 @@
   };
 
 
-  var run = function(){
+  db.run = function(){
     var split = splitArgs(arguments);
 
     if(window.debug)
@@ -145,12 +147,12 @@
     };
     
     split.ids.push(runCallback);
-    require.apply(null, split.ids);
+    db.require.apply(null, split.ids);
   };
 
 
   var bootstrap = function(){
-    run("main");
+    db.run("main");
   };
 
 
@@ -160,6 +162,4 @@
 
   
   window.db = db;
-  window.require = require;
-  window.run = run;
 })();
