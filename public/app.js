@@ -3,6 +3,7 @@
   // Setup db interface
   var db = {};
   var socket = io.connect(window.location.href);
+  var connected = false;
 
 
   //////////// UTIL //////////////////////////////
@@ -169,7 +170,10 @@
 
 
   socket.on("connect", function(){
-    bootstrap();
+    if(!connected){
+      bootstrap();
+      connected = true;
+    }
   });
 
   
