@@ -42,13 +42,14 @@ io.sockets.on("connection", function(socket){
   socket.on("all", function(data, fn){
     var keys = [];
 
-    db.createReadStream()
-      .on('data', function (data) {
-        keys.push(data.key);
+    db.createKeyStream()
+      .on("data", function (data) {
+        keys.push(data);
       })
-      .on('end', function () {
+      .on("end", function(){
         fn(keys);
       });
+
   });
 
 });
