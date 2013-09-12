@@ -1,9 +1,11 @@
 (function(){
 
-  // Setup db interface
+  //////////// VAR ////////////////////////////////
+
   var db = {};
   var socket = io.connect(window.location.href);
   var connected = false;
+  var watching = [];
 
 
   //////////// UTIL //////////////////////////////
@@ -89,6 +91,22 @@
     return fn;
   };
 
+  
+  var changed = function(data){
+    for(var i=0; i<watching.length; i++){
+      var curr = watching[i];
+
+      if(curr.id === data.id){
+        curr.callback(data.value);
+      }
+    }
+  };
+
+  
+  var bootstrap = function(){
+    db.run("main");
+  };
+
 
   //////////// API //////////////////////////////
 
@@ -106,6 +124,7 @@
       value: value
     };
     socket.emit("set", data);
+    changed(data);
   };
   
 
@@ -164,9 +183,53 @@
   };
 
 
-  var bootstrap = function(){
-    db.run("main");
+  // From http://stackoverflow.com/a/1349462
+  var randomString = function(len) {
+      var charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var randomString = '';
+      for (var i = 0; i < len; i++) {
+        var randomPoz = Math.floor(Math.random() * charSet.length);
+        randomString += charSet.substring(randomPoz,randomPoz+1);
+      }
+      return randomString;
   };
+
+
+  db.watch = function(id, callback){
+    if(typeof callback !== "function"){
+      return;
+    }
+
+    var descriptor = randomString(14);
+
+    watching.push({
+      descriptor: descriptor,
+      id: id,
+      callback: callback
+    });
+
+    return descriptor;
+  };
+
+
+  db.unwatch = function(descriptor){
+    var unwatched = false;
+
+    for(var i=0; i<watching.length; i++){
+      if(watching[i].descriptor === descriptor){
+        watching.splice(i, 1);
+        i--;
+        unwatched = true;
+      }
+    }
+
+    return unwatched;
+  };
+
+
+  //////////// INIT //////////////////////////////
+
+  socket.on("watch", changed);
 
 
   socket.on("connect", function(){
@@ -176,6 +239,6 @@
     }
   });
 
-  
+
   window.db = db;
 })();

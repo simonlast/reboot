@@ -22,11 +22,8 @@ io.sockets.on("connection", function(socket){
 
   socket.on("set", function(data){
 
-    db.put(data.id, data.value, function (err) {
-      if(err){
-        console.log("error: PUT ", data.id);
-      }
-    });
+    db.put(data.id, data.value);
+    socket.broadcast.emit("watch", data);
 
   });
 
@@ -34,7 +31,6 @@ io.sockets.on("connection", function(socket){
 
     db.get(data.id, function (err, value) {
       if(err){
-        console.log("error: GET ", data.id);
         fn({err: "not found"});
       }else{
         fn({value: value});
