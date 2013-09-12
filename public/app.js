@@ -91,6 +91,18 @@
     return fn;
   };
 
+
+  // From http://stackoverflow.com/a/1349462
+  var randomString = function(len) {
+      var charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var randomString = '';
+      for (var i = 0; i < len; i++) {
+        var randomPoz = Math.floor(Math.random() * charSet.length);
+        randomString += charSet.substring(randomPoz,randomPoz+1);
+      }
+      return randomString;
+  };
+
   
   var changed = function(data){
     for(var i=0; i<watching.length; i++){
@@ -180,18 +192,6 @@
         callback(data);
       }
     });
-  };
-
-
-  // From http://stackoverflow.com/a/1349462
-  var randomString = function(len) {
-      var charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      var randomString = '';
-      for (var i = 0; i < len; i++) {
-        var randomPoz = Math.floor(Math.random() * charSet.length);
-        randomString += charSet.substring(randomPoz,randomPoz+1);
-      }
-      return randomString;
   };
 
 
