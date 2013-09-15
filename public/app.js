@@ -170,7 +170,7 @@
     var runCallback = function(){
       var args = Array.prototype.slice.call(arguments);
       for(var i=0; i<args.length; i++){
-        args[i]();
+        args[i].apply(window, null);
       }
 
       if(typeof split.callback === "function"){
