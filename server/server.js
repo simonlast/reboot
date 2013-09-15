@@ -14,6 +14,8 @@ app.use(
   connect.static(__dirname + '/../public', { maxAge: oneDay })
 );
 
+db.del("underscore");
+
 var server = http.createServer(app);
 
 var io = sio.listen(server, {log: false});
