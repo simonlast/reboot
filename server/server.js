@@ -52,6 +52,10 @@ io.sockets.on("connection", function(socket){
 
   });
 
+  socket.on("remove", function(data){
+    db.del(data.id);
+  });
+
 });
 
 server.listen(process.argv[2] || 80);

@@ -138,7 +138,15 @@
     socket.emit("set", data);
     changed(data);
   };
-  
+
+
+  db.remove = function(){
+    for(var i=0; i<arguments.length; i++){
+      if(typeof arguments[i] === "string")
+        socket.emit("remove", {id: arguments[i]});
+    }
+  };
+
 
   db.require = function(){
     var split = splitArgs(arguments);
