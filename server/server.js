@@ -6,7 +6,7 @@ var http = require('http'),
   path = require("path");
 
 var app = express();
-var db = levelup(path.join(__dirname, 'db'));
+var db = levelup(path.join(__dirname, 'bot-db'));
 
 var oneDay = 86400000;
 
