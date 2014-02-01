@@ -32,7 +32,7 @@
 
             editor.session.setMode(new mode());
 
-            sharejs.open(pathName, 'text', 'http://localhost/channel', function (error, doc) {
+            sharejs.open(pathName, 'text', '/channel', function (error, doc) {
                 doc.attach_ace(editor);
             });
         });
