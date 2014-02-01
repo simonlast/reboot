@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test</title>
+    <title>Edit</title>
     <script src="/ace.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="/channel/bcsocket.js"></script>
@@ -10,8 +10,8 @@
     <script>
         $(document).ready(function() {
             var editor = ace.edit("editor");
-
-            sharejs.open('hello', 'text', 'http://localhost/channel', function (error, doc) {
+            var pathName = window.location.pathname.split("/")[2]
+            sharejs.open(pathName, 'text', 'http://localhost/channel', function (error, doc) {
                 doc.attach_ace(editor);
             });
         });
