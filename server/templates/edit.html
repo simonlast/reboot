@@ -7,10 +7,31 @@
     <script src="/channel/bcsocket.js"></script>
     <script src="/share/share.js"></script>
     <script src="/share/ace.js"></script>
+    <script src="/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/mode-css.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/mode-html.js" type="text/javascript" charset="utf-8"></script>
+
     <script>
+
         $(document).ready(function() {
             var editor = ace.edit("editor");
+
+            var modes = {
+                "js": require("ace/mode/javascript").Mode,
+                "css": require("ace/mode/css").Mode,
+                "html": require("ace/mode/html").Mode
+            };
+
             var pathName = window.location.pathname.split("/")[2]
+            var fileType = pathName.split(".")[1];
+            var mode = modes.html;
+
+            if((typeof fileType !== "undefined") && (typeof (modes[fileType]) !== "undefined")){
+                mode = modes[fileType];
+            }
+
+            editor.session.setMode(new mode());
+
             sharejs.open(pathName, 'text', 'http://localhost/channel', function (error, doc) {
                 doc.attach_ace(editor);
             });
