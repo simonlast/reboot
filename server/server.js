@@ -1,61 +1,57 @@
-var http = require('http'),
-	connect = require('connect'),
-	express = require('express'),
-	sio = require('socket.io'),
-  levelup = require('levelup'),
-  path = require("path");
+var http = require("http"),
+  connect = require("connect"),
+  express = require("express"),
+  path = require("path"),
+  _ = require("underscore"),
+  consolidate = require("consolidate"),
+  share = require("share");
+
+
+//Share.js
+
+var shareServer = connect();
+
+
+
+
+// Main server
 
 var app = express();
-var db = levelup(path.join(__dirname, 'db'));
+
+var options = {db:{type:"redis"}};
+share.server.attach(app, options);
+
+app.engine("html", consolidate.underscore);
+app.set("view engine", "html");
+app.set("views", path.join(__dirname, "templates"));
+
 
 var oneDay = 86400000;
-
+console.log(path.join(__dirname + "../public"));
 app.use(
-  connect.static(__dirname + '/../public', { maxAge: oneDay })
+  connect.static(path.join(__dirname + "/../public"), { maxAge: oneDay })
 );
 
-var server = http.createServer(app);
+app.get("/edit/:file", function(req, res){
 
-var io = sio.listen(server, {log: false});
+  res.render("edit.html");
 
-io.sockets.on("connection", function(socket){
+});
 
-  socket.on("set", function(data){
+app.get("/:file", function(req, res){
+  var file = req.params.file;
 
-    db.put(data.id, data.value);
-    socket.broadcast.emit("watch", data);
-
-  });
-
-  socket.on("get", function(data, fn){
-
-    db.get(data.id, function (err, value) {
-      if(err){
-        fn({err: "not found"});
-      }else{
-        fn({value: value});
-      }
-    });
-
-  });
-
-  socket.on("all", function(data, fn){
-    var keys = [];
-
-    db.createKeyStream()
-      .on("data", function (data) {
-        keys.push(data);
-      })
-      .on("end", function(){
-        fn(keys);
-      });
-
-  });
-
-  socket.on("remove", function(data){
-    db.del(data.id);
+  app.model.getSnapshot(file, function(err, data){
+    if((typeof data !== "undefined") && (typeof data.snapshot !== "undefined")){
+      res.setHeader("Content-Type", "text/html");
+      res.send(data.snapshot);
+    }else{
+      res.send(404);
+    }
   });
 
 });
+
+var server = http.createServer(app);
 
 server.listen(process.argv[2] || 80);
