@@ -23,7 +23,8 @@
             };
 
             var pathName = window.location.pathname.split("/")[2]
-            var fileType = pathName.split(".")[1];
+            var dots = pathName.split(".");
+            var fileType = dots[dots.length-1]
             var mode = modes.html;
 
             if((typeof fileType !== "undefined") && (typeof (modes[fileType]) !== "undefined")){

@@ -1,10 +1,11 @@
-var http = require("http"),
-  connect = require("connect"),
-  express = require("express"),
-  path = require("path"),
-  _ = require("underscore"),
+var http      = require("http"),
+  fs          = require("fs"),
+  path        = require("path"),
+  _           = require("underscore"),
+  connect     = require("connect"),
+  express     = require("express"),
   consolidate = require("consolidate"),
-  share = require("share");
+  share       = require("share");
 
 
 var app = express();
@@ -28,21 +29,90 @@ app.use(
 );
 
 
-// Editor
-app.get("/edit/:file", function(req, res){
-  res.render("edit.html");
+// Backup
+var backupFolder = path.join(__dirname, "/backup");
+
+saveSnapshot = function(docName, snapshot){
+  var docFolder = path.join(backupFolder, "/" + docName);
+
+  fs.mkdir(docFolder, function(err){
+    var backupFile = "/" + new Date().toString();
+
+    fs.writeFile(path.join(docFolder, backupFile), snapshot, "utf8", function(err){
+      if(err){
+        console.log("Backup err: ", err);
+      }
+    });
+
+  });
+
+};
+
+var backup = function(docName){
+  getSnapshot(docName, function(err, snapshot){
+
+    if(snapshot){
+      saveSnapshot(docName, snapshot);
+    }
+
+  });
+};
+
+
+var getSnapshot = function(docName, callback){
+  app.model.getSnapshot(docName, function(err, data){
+
+    if(err){
+      return callback(err);
+    }
+
+    if(data && data.snapshot){
+      return callback(undefined, data.snapshot);
+    }
+
+    return callback(undefined);
+
+  });
+};
+
+
+app.get("/", function(req, res){
+  res.redirect("/index.html");
 });
 
 
+// Editor
+app.get("/edit/:docName", function(req, res){
+  res.render("edit.html");
+
+  backup(req.params.docName);
+});
+
+
+var contentTypes = {
+  "html": "text/html",
+  "js"  : "text/javascript",
+  "css" : "text/css"
+};
+
+var getContentType = function(docName){
+  var dots = docName.split(".");
+  var type = dots[dots.length-1];
+
+  return contentTypes[type] || "text/html";
+};
+
+
 // Viewer
-app.get("/:file", function(req, res){
-  var file = req.params.file;
+app.get("/:docName", function(req, res){
+  var docName = req.params.docName;
 
-  app.model.getSnapshot(file, function(err, data){
+  getSnapshot(docName, function(err, snapshot){
 
-    if((typeof data !== "undefined") && (typeof data.snapshot !== "undefined")){
-      res.setHeader("Content-Type", "text/html");
-      res.send(data.snapshot);
+    if(snapshot){
+      var contentType = getContentType(docName);
+      res.setHeader("Content-Type", contentType);
+      res.send(snapshot);
     }else{
       res.send(404);
     }
