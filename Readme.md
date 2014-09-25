@@ -1,6 +1,6 @@
 ##Reboot
 
-This is an attempt to make a completely bootstrapped editor for the web, followed by an attempt to figure out what to do with such an editor.
+This is an attempt to make a completely bootstrapped editor for the web.
 
 ===================================
 
@@ -10,8 +10,3 @@ This is an attempt to make a completely bootstrapped editor for the web, followe
 
 --> `localhost`
 
-===================================
-
-Q: But where's all the code?
-
-A: Exactly.
